@@ -19,6 +19,7 @@
     "@types/react": "^18.2.14",
     "@types/react-datepicker": "^4.11.2",
     "@types/react-dom": "^18.2.6",
+    "axios": "^1.6.5",
     "framer-motion": "^10.12.18",
     "google-map-react": "^2.2.1",
     "lodash": "^4.17.21",

@@ -63,9 +63,9 @@ function PageHome3() {
   useEffect(() => {
     const $body = document.querySelector("body");
     if (!$body) return;
-    $body.classList.add("theme-purple-blueGrey");
+    $body.classList.add("theme-orange-grey-nomadroof");
     return () => {
-      $body.classList.remove("theme-purple-blueGrey");
+      $body.classList.remove("theme-orange-grey-nomadroof");
     };
   }, []);
 

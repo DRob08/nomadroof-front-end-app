@@ -30,6 +30,17 @@ const loginSocials = [
 ];
 
 const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
+
+  const handleContinueClick = () => {
+    console.log("I am logging in");
+
+    // Add your code to connect to the backend API here
+    // For example:
+    // fetch('your-backend-api-endpoint')
+    //   .then(response => response.json())
+    //   .then(data => console.log(data))
+    //   .catch(error => console.error(error));
+  };
   return (
     <div className={`nc-PageLogin ${className}`} data-nc-id="PageLogin">
       <Helmet>
@@ -71,11 +82,7 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
               <span className="text-neutral-800 dark:text-neutral-200">
                 Email address
               </span>
-              <Input
-                type="email"
-                placeholder="example@example.com"
-                className="mt-1"
-              />
+              <Input type="email" placeholder="example@example.com" className="mt-1" />
             </label>
             <label className="block">
               <span className="flex justify-between items-center text-neutral-800 dark:text-neutral-200">
@@ -86,7 +93,9 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
               </span>
               <Input type="password" className="mt-1" />
             </label>
-            <ButtonPrimary type="submit">Continue</ButtonPrimary>
+            <ButtonPrimary type="button" onClick={handleContinueClick}>
+              Continue
+            </ButtonPrimary>
           </form>
 
           {/* ==== */}

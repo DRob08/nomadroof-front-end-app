@@ -1,5 +1,5 @@
 import Label from "components/Label/Label";
-import React, { FC } from "react";
+import React, { FC,useEffect, useState  } from "react";
 import Avatar from "shared/Avatar/Avatar";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
 import Input from "shared/Input/Input";
@@ -7,12 +7,78 @@ import Select from "shared/Select/Select";
 import Textarea from "shared/Textarea/Textarea";
 import CommonLayout from "./CommonLayout";
 import { Helmet } from "react-helmet";
+import { checkAuthentication } from '../../api/axios';
+
 
 export interface AccountPageProps {
   className?: string;
 }
 
 const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
+  const [userDetails, setUserDetails] = useState({
+    country_of_origin: '',
+    first_name: '',
+    last_name: '',
+    whatsapp_number: '',
+    languages_spoken: '',
+    about_me: '',
+    dob: '',
+    instagram_handle: '',
+    twitter_handle: '',
+    linkedin_handle: '',
+    email: '',
+  });
+
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    console.log('useEffect is running...');
+    const fetchUserDetails = async () => {
+      try {
+        const response = await checkAuthentication();
+        const user = response.user;
+        console.log(user);
+        const isEmailNotAuthenticated = user.confirmation_token !== null;
+        setUserEmail(user.email || '');
+
+        setUserDetails({
+          country_of_origin: user.country_of_origin || '',
+          first_name: user.first_name || '',
+          last_name: user.last_name || '',
+          whatsapp_number: user.whatsapp_number || '',
+          languages_spoken: user.languages_spoken || '',
+          about_me: user.about_me || '',
+          dob: user.dob || '',
+          instagram_handle: user.instagram_handle || '',
+          twitter_handle: user.twitter_handle || '',
+          linkedin_handle: user.linkedin_handle || '',
+          email: user.email || '',
+        });
+
+        console.log('User email set:', user.email || '');
+        console.log('User details set:', {
+          country_of_origin: user.country_of_origin || '',
+          first_name: user.first_name || '',
+          last_name: user.last_name || '',
+          whatsapp_number: user.whatsapp_number || '',
+          languages_spoken: user.languages_spoken || '',
+          about_me: user.about_me || '',
+          dob: user.dob || '',
+          instagram_handle: user.instagram_handle || '',
+          twitter_handle: user.twitter_handle || '',
+          linkedin_handle: user.linkedin_handle || '',
+        });
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
+
+
   return (
     <div className={`nc-AccountPage ${className}`} data-nc-id="AccountPage">
       <Helmet>
@@ -53,10 +119,32 @@ const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
               </div>
             </div>
             <div className="flex-grow mt-10 md:mt-0 md:pl-16 max-w-3xl space-y-6">
-              <div>
-                <Label>Name</Label>
-                <Input className="mt-1.5" defaultValue="Eden Tuan" />
-              </div>
+            <div>
+              <Label>First Name</Label>
+              <Input
+                className="mt-1.5"
+                value={userDetails.first_name || ''}
+                onChange={(e) => {
+                  setUserDetails({
+                    ...userDetails,
+                    first_name: e.target.value,
+                  });
+                }}
+              />
+            </div>
+            <div>
+              <Label>Last Name</Label>
+              <Input
+                className="mt-1.5"
+                value={userDetails.last_name || ''}
+                onChange={(e) => {
+                  setUserDetails({
+                    ...userDetails,
+                    last_name: e.target.value,
+                  });
+                }}
+              />
+            </div>
               {/* ---- */}
               <div>
                 <Label>Gender</Label>
@@ -74,7 +162,17 @@ const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
               {/* ---- */}
               <div>
                 <Label>Email</Label>
-                <Input className="mt-1.5" defaultValue="example@email.com" />
+                <Input
+                  className="mt-1.5"
+                  value={userDetails.email || 'example@gmail.com'}
+                  onChange={(e) => {
+                    // Handle changes if needed
+                    setUserDetails({
+                      ...userDetails,
+                      email: e.target.value,
+                    });
+                  }}
+                />
               </div>
               {/* ---- */}
               <div className="max-w-lg">
@@ -82,7 +180,14 @@ const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
                 <Input
                   className="mt-1.5"
                   type="date"
-                  defaultValue="1990-07-22"
+                  value={userDetails.dob || '1990-07-22'}  
+                  onChange={(e) => {
+                    // Handle changes if needed
+                    setUserDetails({
+                      ...userDetails,
+                      dob: e.target.value,
+                    });
+                  }}
                 />
               </div>
               {/* ---- */}
@@ -93,13 +198,76 @@ const AccountPage: FC<AccountPageProps> = ({ className = "" }) => {
               {/* ---- */}
               <div>
                 <Label>Phone number</Label>
-                <Input className="mt-1.5" defaultValue="003 888 232" />
+                <Input
+                  className="mt-1.5"
+                  value={userDetails.whatsapp_number || '003 888 232'} 
+                  onChange={(e) => {
+                    // Handle changes if needed
+                    setUserDetails({
+                      ...userDetails,
+                      whatsapp_number: e.target.value,
+                    });
+                  }}
+                />
               </div>
               {/* ---- */}
               <div>
                 <Label>About you</Label>
-                <Textarea className="mt-1.5" defaultValue="..." />
+                <Textarea
+                  className="mt-1.5"
+                  value={userDetails.about_me || '...'}  
+                  onChange={(e) => {
+                    // Handle changes if needed
+                    setUserDetails({
+                      ...userDetails,
+                      about_me: e.target.value,
+                    });
+                  }}
+                />
               </div>
+
+              {/* ---- */}
+        <div>
+          <Label>Instagram</Label>
+          <Input
+            className="mt-1.5"
+            value={userDetails.instagram_handle || ''}
+            onChange={(e) => {
+              setUserDetails({
+                ...userDetails,
+                instagram_handle: e.target.value,
+              });
+            }}
+          />
+        </div>
+        {/* ---- */}
+        <div>
+          <Label>Twitter</Label>
+          <Input
+            className="mt-1.5"
+            value={userDetails.twitter_handle || ''}
+            onChange={(e) => {
+              setUserDetails({
+                ...userDetails,
+                twitter_handle: e.target.value,
+              });
+            }}
+          />
+        </div>
+        {/* ---- */}
+        <div>
+          <Label>LinkedIn</Label>
+          <Input
+            className="mt-1.5"
+            value={userDetails.linkedin_handle || ''}
+            onChange={(e) => {
+              setUserDetails({
+                ...userDetails,
+                linkedin_handle: e.target.value,
+              });
+            }}
+          />
+        </div>
               <div className="pt-2">
                 <ButtonPrimary>Update info</ButtonPrimary>
               </div>
