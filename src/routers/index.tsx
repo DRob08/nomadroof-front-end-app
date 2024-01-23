@@ -46,6 +46,8 @@ import PageHome3 from "containers/PageHome/PageHome3";
 import ListingStayDetailPage from "containers/ListingDetailPage/listing-stay-detail/ListingStayDetailPage";
 import ListingCarDetailPage from "containers/ListingDetailPage/listing-car-detail/ListingCarDetailPage";
 import ListingExperiencesDetailPage from "containers/ListingDetailPage/listing-experiences-detail/ListingExperiencesDetailPage";
+import useLoginStatus from 'hooks/useLoginStatus'; // Import the hook
+import { AuthProvider } from "contexts/AuthContext"; 
 
 export const pages: Page[] = [
   { path: "/", exact: true, component: PageHome },
@@ -112,27 +114,30 @@ export const pages: Page[] = [
 ];
 
 const MyRoutes = () => {
+  const loginStatus = useLoginStatus(); 
   let WIN_WIDTH = useWindowSize().width;
   if (typeof window !== "undefined") {
     WIN_WIDTH = WIN_WIDTH || window.innerWidth;
   }
 
   return (
-    <BrowserRouter>
-      <ScrollToTop />
-      <SiteHeader />
+    <AuthProvider initialLoggedIn={loginStatus.userLoggedInStatus}>
+      <BrowserRouter>
+        <ScrollToTop />
+        <SiteHeader userLoggedInStatus={loginStatus.userLoggedInStatus} />
 
-      <Routes>
-        {pages.map(({ component, path }) => {
-          const Component = component;
-          return <Route key={path} element={<Component />} path={path} />;
-        })}
-        <Route element={<Page404 />} />
-      </Routes>
+        <Routes>
+          {pages.map(({ component, path }) => {
+            const Component = component;
+            return <Route key={path} element={<Component />} path={path} />;
+          })}
+          <Route path="*" element={<Page404 />} />
+        </Routes>
 
-      {WIN_WIDTH < 768 && <FooterNav />}
-      <Footer />
-    </BrowserRouter>
+        {WIN_WIDTH < 768 && <FooterNav />}
+        <Footer />
+      </BrowserRouter>
+    </AuthProvider>
   );
 };
 

@@ -1,12 +1,45 @@
-import React, { FC } from "react";
+import React, { FC, useState, useEffect} from "react";
 import Input from "shared/Input/Input";
 import Select from "shared/Select/Select";
 import CommonLayout from "./CommonLayout";
 import FormItem from "./FormItem";
+import {
+  fetchCategories,
+  createProperty,
+  updateProperty
+} from '../../api/axios';
+
 
 export interface PageAddListing1Props {}
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 const PageAddListing1: FC<PageAddListing1Props> = () => {
+
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  useEffect(() => {
+    const fetchCategoriesData = async () => {
+      try {
+        const categoriesData = await fetchCategories();
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategoriesData();
+  }, []);
+
+
+
   return (
     <CommonLayout
       index="01"
@@ -19,18 +52,22 @@ const PageAddListing1: FC<PageAddListing1Props> = () => {
         {/* FORM */}
         <div className="space-y-8">
           {/* ITEM */}
-          <FormItem
+         <FormItem
             label="Choose a property type"
             desc="Hotel: Professional hospitality businesses that usually have a unique style or theme defining their brand and decor"
           >
-            <Select>
-              <option value="Hotel">Hotel</option>
-              <option value="Cottage">Cottage</option>
-              <option value="Villa">Villa</option>
-              <option value="Cabin">Cabin</option>
-              <option value="Farm stay">Farm stay</option>
-              <option value="Houseboat">Houseboat</option>
-              <option value="Lighthouse">Lighthouse</option>
+            <Select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="" disabled>
+                Select a property type
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
             </Select>
           </FormItem>
           <FormItem

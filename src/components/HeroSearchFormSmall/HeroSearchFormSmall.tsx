@@ -3,8 +3,6 @@
 import React, { FC, useEffect, useState } from "react";
 import StaySearchForm from "./(stay-search-form)/StaySearchForm";
 import ExperiencesSearchForm from "./(experiences-search-form)/ExperiencesSearchForm";
-import RentalCarSearchForm from "./(car-search-form)/RentalCarSearchForm";
-import FlightSearchForm from "./(flight-search-form)/FlightSearchForm";
 import { StaySearchFormFields } from "components/HeroSearchForm/type";
 
 export type SearchTab = "Stays" | "Experiences" | "Cars" | "Flights";
@@ -15,7 +13,7 @@ export interface HeroSearchFormSmallProps {
   onTabChange?: (tab: SearchTab) => void;
   defaultFieldFocus?: StaySearchFormFields;
 }
-const TABS: SearchTab[] = ["Stays", "Experiences", "Cars", "Flights"];
+const TABS: SearchTab[] = ["Stays", "Experiences"];
 
 const HeroSearchFormSmall: FC<HeroSearchFormSmallProps> = ({
   className = "",
@@ -66,11 +64,6 @@ const HeroSearchFormSmall: FC<HeroSearchFormSmallProps> = ({
         return <StaySearchForm defaultFieldFocus={defaultFieldFocus} />;
       case "Experiences":
         return <ExperiencesSearchForm />;
-      case "Cars":
-        return <RentalCarSearchForm />;
-      case "Flights":
-        return <FlightSearchForm />;
-
       default:
         return null;
     }

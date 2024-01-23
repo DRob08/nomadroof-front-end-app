@@ -8,47 +8,63 @@ import {
   LifebuoyIcon,
 } from "@heroicons/react/24/outline";
 import { Fragment } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Avatar from "shared/Avatar/Avatar";
-
-const solutions = [
-  {
-    name: "Account",
-    href: "/author",
-    icon: UserCircleIcon,
-  },
-  {
-    name: "Messages",
-    href: "##",
-    icon: ChatBubbleBottomCenterTextIcon,
-  },
-  {
-    name: "Wishlists",
-    href: "/account-savelists",
-    icon: HeartIcon,
-  },
-  {
-    name: "Booking",
-    href: "##",
-    icon: HomeIcon,
-  },
-];
-
-const solutionsFoot = [
-  {
-    name: "Help",
-    href: "##",
-    icon: LifebuoyIcon,
-  },
-
-  {
-    name: "Logout",
-    href: "##",
-    icon: ArrowRightOnRectangleIcon,
-  },
-];
+import { logout } from '../../api/axios';
+import { useAuth } from "contexts/AuthContext"; 
 
 export default function AvatarDropdown() {
+  const navigate = useNavigate();
+  const { logout: authLogout } = useAuth(); 
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      await authLogout();
+      console.log("Logout Successful");
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
+  const solutions = [
+    {
+      name: "Account",
+      href: "/author",
+      icon: UserCircleIcon,
+    },
+    {
+      name: "Messages",
+      href: "##",
+      icon: ChatBubbleBottomCenterTextIcon,
+    },
+    {
+      name: "Wishlists",
+      href: "/account-savelists",
+      icon: HeartIcon,
+    },
+    {
+      name: "Booking",
+      href: "##",
+      icon: HomeIcon,
+    },
+  ];
+  
+  const solutionsFoot = [
+    {
+      name: "Help",
+      href: "##",
+      icon: LifebuoyIcon,
+    },
+  
+    {
+      name: "Logout",
+      onClick: handleLogout,
+      icon: ArrowRightOnRectangleIcon,
+    },
+  ];
+
   return (
     <div className="AvatarDropdown">
       <Popover className="relative">
@@ -89,9 +105,9 @@ export default function AvatarDropdown() {
                   <hr className="h-[1px] border-t border-neutral-300 dark:border-neutral-700" />
                   <div className="relative grid gap-6 bg-white dark:bg-neutral-800 p-7">
                     {solutionsFoot.map((item, index) => (
-                      <a
+                      <button
                         key={index}
-                        href={item.href}
+                        onClick={item.onClick}
                         className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       >
                         <div className="flex items-center justify-center flex-shrink-0 text-neutral-500 dark:text-neutral-300">
@@ -100,7 +116,7 @@ export default function AvatarDropdown() {
                         <div className="ml-4">
                           <p className="text-sm font-medium ">{item.name}</p>
                         </div>
-                      </a>
+                      </button>
                     ))}
                   </div>
                 </div>

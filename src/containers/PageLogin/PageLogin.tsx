@@ -1,11 +1,13 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import facebookSvg from "images/Facebook.svg";
 import twitterSvg from "images/Twitter.svg";
 import googleSvg from "images/Google.svg";
 import { Helmet } from "react-helmet";
 import Input from "shared/Input/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
+import { loginUser, checkEmailAvailability } from '../../api/axios';
+import { useAuth } from "contexts/AuthContext"; 
 
 export interface PageLoginProps {
   className?: string;
@@ -30,17 +32,70 @@ const loginSocials = [
 ];
 
 const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loginErrors, setLoginErrors] = useState([]);
+  const [generalError, setGeneralError] = useState<string | null>(null);
 
-  const handleContinueClick = () => {
-    console.log("I am logging in");
+  const [emailAvailabilityError, setEmailAvailabilityError] = useState(null);
+  const { isLoggedIn, login } = useAuth();
 
-    // Add your code to connect to the backend API here
-    // For example:
-    // fetch('your-backend-api-endpoint')
-    //   .then(response => response.json())
-    //   .then(data => console.log(data))
-    //   .catch(error => console.error(error));
+  const navigate = useNavigate();
+
+  const handleContinueClick = async () => {
+    try {
+      console.log("I am logging in");
+  
+      if (!email || !password) {
+        setGeneralError("Please provide both email and password.");
+        return;
+      }
+  
+      const userData = {
+        email,
+        password,
+      };
+  
+      const response = await loginUser(userData);
+
+      login();
+  
+      if (response.status === 'created' && response.logged_in) {
+        // Redirect to the dashboard upon successful login
+        navigate("/account");
+      } else {
+        // Handle other cases, e.g., show an error message
+        console.error('Login failed:', response);
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+  
+      if (error.response) {
+        // Handle error response
+        const responseData = error.response.data;
+        if (responseData && responseData.errors) {
+          const errorsArray = responseData.errors as string[];
+  
+          const incorrectPasswordError = errorsArray.find(
+            (errMsg) => errMsg === "Incorrect password"
+          );
+  
+          if (incorrectPasswordError) {
+            setGeneralError(incorrectPasswordError);
+          } else {
+            setGeneralError("Login failed. Please fix the following errors:");
+          }
+        } else {
+          setGeneralError("An unexpected error occurred during login.");
+        }
+      } else {
+        // Handle other error cases
+        setGeneralError("An unexpected error occurred. Please try again.");
+      }
+    }
   };
+  
+
   return (
     <div className={`nc-PageLogin ${className}`} data-nc-id="PageLogin">
       <Helmet>
@@ -69,20 +124,18 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
               </a>
             ))}
           </div>
-          {/* OR */}
           <div className="relative text-center">
             <span className="relative z-10 inline-block px-4 font-medium text-sm bg-white dark:text-neutral-400 dark:bg-neutral-900">
               OR
             </span>
             <div className="absolute left-0 w-full top-1/2 transform -translate-y-1/2 border border-neutral-100 dark:border-neutral-800"></div>
           </div>
-          {/* FORM */}
           <form className="grid grid-cols-1 gap-6" action="#" method="post">
             <label className="block">
               <span className="text-neutral-800 dark:text-neutral-200">
                 Email address
               </span>
-              <Input type="email" placeholder="example@example.com" className="mt-1" />
+              <Input type="email" placeholder="example@example.com" value={email} onChange={(e) => setEmail(e.target.value)} className="mt-1" />
             </label>
             <label className="block">
               <span className="flex justify-between items-center text-neutral-800 dark:text-neutral-200">
@@ -91,18 +144,20 @@ const PageLogin: FC<PageLoginProps> = ({ className = "" }) => {
                   Forgot password?
                 </Link>
               </span>
-              <Input type="password" className="mt-1" />
+              <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="mt-1" />
             </label>
             <ButtonPrimary type="button" onClick={handleContinueClick}>
               Continue
             </ButtonPrimary>
           </form>
-
-          {/* ==== */}
           <span className="block text-center text-neutral-700 dark:text-neutral-300">
-            New user? {` `}
-            <Link to="/signup">Create an account</Link>
+            New user? <Link to="/signup">Create an account</Link>
           </span>
+          {generalError && (
+            <div style={{ color: "red", marginBottom: "10px" }}>
+              <p>{generalError}</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

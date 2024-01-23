@@ -3,8 +3,6 @@
 import React, { FC, useState } from "react";
 import StaySearchForm from "./(stay-search-form)/StaySearchForm";
 import ExperiencesSearchForm from "./(experiences-search-form)/ExperiencesSearchForm";
-import RentalCarSearchForm from "./(car-search-form)/RentalCarSearchForm";
-import FlightSearchForm from "./(flight-search-form)/FlightSearchForm";
 
 export type SearchTab = "Stays" | "Experiences" | "Cars" | "Flights";
 
@@ -19,13 +17,13 @@ const HeroSearchForm: FC<HeroSearchFormProps> = ({
   currentTab = "Stays",
   currentPage,
 }) => {
-  const tabs: SearchTab[] = ["Stays", "Experiences", "Cars", "Flights"];
+  const tabsToShow: SearchTab[] = ["Stays", "Experiences"];
   const [tabActive, setTabActive] = useState<SearchTab>(currentTab);
 
   const renderTab = () => {
     return (
       <ul className="ml-2 sm:ml-6 md:ml-12 flex space-x-5 sm:space-x-8 lg:space-x-11 overflow-x-auto hiddenScrollbar">
-        {tabs.map((tab) => {
+        {tabsToShow.map((tab) => {
           const active = tab === tabActive;
           return (
             <li
@@ -54,11 +52,6 @@ const HeroSearchForm: FC<HeroSearchFormProps> = ({
         return <StaySearchForm />;
       case "Experiences":
         return <ExperiencesSearchForm />;
-      case "Cars":
-        return <RentalCarSearchForm />;
-      case "Flights":
-        return <FlightSearchForm />;
-
       default:
         return null;
     }

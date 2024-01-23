@@ -111,7 +111,7 @@ const GuestsInput: FC<GuestsInputProps> = ({
                 max={10}
                 min={1}
                 label="Adults"
-                desc="Ages 13 or above"
+                desc="Ages 18 or above"
               />
               <NcInputNumber
                 className="w-full mt-6"

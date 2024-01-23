@@ -23,37 +23,27 @@ const GuestsInput: FC<GuestsInputProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   useOutsideAlerter(refContainer, () => setIsOpen(false));
 
-  const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(2);
-  const [guestChildrenInputValue, setGuestChildrenInputValue] = useState(1);
-  const [guestInfantsInputValue, setGuestInfantsInputValue] = useState(1);
-  //
+  const [guestAdultsInputValue, setGuestAdultsInputValue] = useState(1);
+  const [guestChildrenInputValue, setGuestChildrenInputValue] = useState(0);
+  const [guestInfantsInputValue, setGuestInfantsInputValue] = useState(0);
 
   useEffect(() => {
     setIsOpen(autoFocus);
   }, [autoFocus]);
 
   const handleChangeData = (value: number, type: keyof GuestsObject) => {
-    let newValue = {
-      guestAdults: guestAdultsInputValue,
-      guestChildren: guestChildrenInputValue,
-      guestInfants: guestInfantsInputValue,
-    };
     if (type === "guestAdults") {
       setGuestAdultsInputValue(value);
-      newValue.guestAdults = value;
     }
     if (type === "guestChildren") {
       setGuestChildrenInputValue(value);
-      newValue.guestChildren = value;
     }
     if (type === "guestInfants") {
       setGuestInfantsInputValue(value);
-      newValue.guestInfants = value;
     }
   };
 
-  const totalGuests =
-    guestChildrenInputValue + guestAdultsInputValue + guestInfantsInputValue;
+  const totalGuests = guestChildrenInputValue + guestAdultsInputValue;
 
   return (
     <div className={`flex z-10 relative ${className}`} ref={refContainer}>
@@ -104,25 +94,9 @@ const GuestsInput: FC<GuestsInputProps> = ({
             max={10}
             min={1}
             label="Adults"
-            desc="Ages 13 or above"
+            desc="Ages 18 or above"
           />
-          <NcInputNumber
-            className="w-full mt-6"
-            defaultValue={guestChildrenInputValue}
-            onChange={(value) => handleChangeData(value, "guestChildren")}
-            max={4}
-            label="Children"
-            desc="Ages 2–12"
-          />
-
-          <NcInputNumber
-            className="w-full mt-6"
-            defaultValue={guestInfantsInputValue}
-            onChange={(value) => handleChangeData(value, "guestInfants")}
-            max={4}
-            label="Infants"
-            desc="Ages 0–2"
-          />
+          {/* Remove NcInputNumber for guestChildren and guestInfants */}
         </div>
       )}
     </div>
