@@ -8,6 +8,7 @@ import {
   createProperty,
   updateProperty
 } from '../../api/axios';
+import { usePropertyContextProvider } from '../../contexts/PropertyContext';
 
 
 export interface PageAddListing1Props {}
@@ -19,11 +20,32 @@ interface Category {
 
 const PageAddListing1: FC<PageAddListing1Props> = () => {
 
+
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+
+  const { propertyState, setPropertyField, setPropertyId } = usePropertyContextProvider();
+
+  // Destructure propertyState values
+  const {
+    property_id,
+    name,
+    description,
+    cat_property_id,
+    size,
+    bedrooms,
+    bathrooms,
+    rooms,
+    monthly_price,
+    city_fee,
+    cleaning_fee,
+    min_months_booking,
+    extra_price_per_guest
+  } = propertyState;
+
 
   useEffect(() => {
     const fetchCategoriesData = async () => {
@@ -39,6 +61,19 @@ const PageAddListing1: FC<PageAddListing1Props> = () => {
   }, []);
 
 
+  // Update propertyState when the form values change
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setPropertyField(e.target.name, e.target.value);
+  };
+ 
+  // Update propertyState when the form values change
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+    const selectedCategoryId = categories.find((category) => category.name === value)?.id || '';
+    setPropertyField('cat_property_id', selectedCategoryId);
+  };
+
+
 
   return (
     <CommonLayout
@@ -52,32 +87,39 @@ const PageAddListing1: FC<PageAddListing1Props> = () => {
         {/* FORM */}
         <div className="space-y-8">
           {/* ITEM */}
-         <FormItem
+          <FormItem
             label="Choose a property type"
             desc="Hotel: Professional hospitality businesses that usually have a unique style or theme defining their brand and decor"
           >
             <Select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              name="cat_property_id"
+              value={cat_property_id}
+              onChange={handleInputChange}
             >
               <option value="" disabled>
                 Select a property type
               </option>
               {categories.map((category) => (
-                <option key={category.id} value={category.name}>
+                <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
             </Select>
           </FormItem>
           <FormItem
-            label="Place name"
+            label="Give me your best name"
             desc="A catchy name usually includes: House name + Room name + Featured property + Tourist destination"
           >
-            <Input placeholder="Places name" />
+            <Input
+              type="text"
+              name="name"
+              value={name}
+              onChange={handleInputChange}
+              placeholder="Places name"
+            />
           </FormItem>
           <FormItem
-            label="Rental form"
+            label="What are you renting?"
             desc="Entire place: Guests have the whole place to themselves—there's a private entrance and no shared spaces. A bedroom, bathroom, and kitchen are usually included."
           >
             <Select>

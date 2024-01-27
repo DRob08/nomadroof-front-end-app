@@ -48,6 +48,7 @@ import ListingCarDetailPage from "containers/ListingDetailPage/listing-car-detai
 import ListingExperiencesDetailPage from "containers/ListingDetailPage/listing-experiences-detail/ListingExperiencesDetailPage";
 import useLoginStatus from 'hooks/useLoginStatus'; // Import the hook
 import { AuthProvider } from "contexts/AuthContext"; 
+import { PropertyProvider } from 'contexts/PropertyContext'; 
 
 export const pages: Page[] = [
   { path: "/", exact: true, component: PageHome },
@@ -122,6 +123,7 @@ const MyRoutes = () => {
 
   return (
     <AuthProvider initialLoggedIn={loginStatus.userLoggedInStatus}>
+        <PropertyProvider>
       <BrowserRouter>
         <ScrollToTop />
         <SiteHeader userLoggedInStatus={loginStatus.userLoggedInStatus} />
@@ -137,7 +139,9 @@ const MyRoutes = () => {
         {WIN_WIDTH < 768 && <FooterNav />}
         <Footer />
       </BrowserRouter>
+      </PropertyProvider>
     </AuthProvider>
+ 
   );
 };
 

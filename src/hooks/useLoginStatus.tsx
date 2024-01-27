@@ -9,15 +9,13 @@ const useLoginStatus = () => {
     try {
       const response = await checkLoginStatus();
 
-      console.log('Response from checkLoginStatus:', response);
-
       setUser((prevUser) => {
         if (response.logged_in && !userLoggedInStatus) {
-          console.log('User logged in');
+         
           setUserLoggedInStatus(true);
           return response.user;
         } else if (!response.logged_in && userLoggedInStatus) {
-          console.log('User logged out');
+     
           setUserLoggedInStatus(false);
           return null;
         }
@@ -36,7 +34,7 @@ const useLoginStatus = () => {
     fetchData();
   }, []);
 
-  console.log('Current state:', { user, userLoggedInStatus });
+ // console.log('Current state:', { user, userLoggedInStatus });
 
   return { user, userLoggedInStatus, fetchLoginStatus };
 };

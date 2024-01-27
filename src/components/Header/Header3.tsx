@@ -30,7 +30,7 @@ const Header3: FC<Header3Props> = ({ className = "" , userLoggedInStatus }) => {
 
   const { isLoggedIn } = useAuth();
 
-  console.log(isLoggedIn + " This is current value");
+ // console.log(isLoggedIn + " This is current value");
 
   //
   useOutsideAlerter(headerInnerRef, () => {
@@ -54,7 +54,7 @@ const Header3: FC<Header3Props> = ({ className = "" , userLoggedInStatus }) => {
   }, []);
 
   useEffect(() => {
-    console.log("User logged in status changed in Header3:", userLoggedInStatus);
+   
     setShowHeroSearch(null); // or any other necessary state updates
   }, [userLoggedInStatus]);
 

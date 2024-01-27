@@ -37,7 +37,7 @@ interface PropertyAction {
   payload?: any;
 }
 
-interface PropertyContextType {
+interface PropertyContextProps {
   propertyState: PropertyState;
   setPropertyField: (field: string, value: any) => void;
   setPropertyId: (property_id: string) => void;
@@ -47,6 +47,7 @@ interface PropertyContextType {
 const initialState: PropertyState = {
   property_id: null,
   user_id: null,
+  
   name: '',
   description: '',
   latitude: null,
@@ -101,12 +102,14 @@ const propertyReducer = (state: PropertyState, action: PropertyAction): Property
   }
 };
 
-const PropertyContext = createContext<PropertyContextType | undefined>(undefined);
+// Renamed context to make it more unique
+const PropertyContextProvider = createContext<PropertyContextProps | undefined>(undefined);
 
 interface PropertyProviderProps {
   children: ReactNode;
 }
 
+// Renamed the provider to make it more unique
 export const PropertyProvider: FC<PropertyProviderProps> = ({ children }) => {
   const [propertyState, dispatch] = useReducer(propertyReducer, initialState);
 
@@ -129,16 +132,17 @@ export const PropertyProvider: FC<PropertyProviderProps> = ({ children }) => {
   };
 
   return (
-    <PropertyContext.Provider value={{ propertyState, setPropertyField, setPropertyId, resetProperty }}>
+    <PropertyContextProvider.Provider value={{ propertyState, setPropertyField, setPropertyId, resetProperty }}>
       {children}
-    </PropertyContext.Provider>
+    </PropertyContextProvider.Provider>
   );
 };
 
-export const usePropertyContext = (): PropertyContextType => {
-  const context = useContext(PropertyContext);
+// Renamed the use hook for consistency
+export const usePropertyContextProvider = (): PropertyContextProps => {
+  const context = useContext(PropertyContextProvider);
   if (!context) {
-    throw new Error('usePropertyContext must be used within a PropertyProvider');
+    throw new Error('usePropertyContextProvider must be used within a PropertyContextProvider');
   }
   return context;
 };

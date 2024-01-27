@@ -2,7 +2,7 @@ import React from "react";
 import { FC } from "react";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
 import ButtonSecondary from "shared/Button/ButtonSecondary";
-import { PropertyProvider } from 'contexts/PropertyContext'; // Update the import path accordingly
+// import { PropertyProvider } from 'contexts/PropertyContext'; // Update the import path accordingly
 
 export interface CommonLayoutProps {
   index: string;
@@ -20,7 +20,7 @@ const CommonLayout: FC<CommonLayoutProps> = ({
   backtHref,
 }) => {
   return (
-    <PropertyProvider>
+
       <div
         className={`nc-PageAddListing1 px-4 max-w-3xl mx-auto pb-24 pt-14 sm:py-24 lg:pb-32`}
         data-nc-id="PageAddListing1"
@@ -45,7 +45,7 @@ const CommonLayout: FC<CommonLayoutProps> = ({
           </div>
         </div>
       </div>
-    </PropertyProvider>
+
   );
 };
 

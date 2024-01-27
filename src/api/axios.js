@@ -76,11 +76,11 @@ export const checkEmailAvailability = async (email) => {
 
   export const updateUser = async (userData) => {
     try {
-      console.log('Updating user with data:', userData);
+     // console.log('Updating user with data:', userData);
   
       const response = await api.put('/users', { user: userData }, { withCredentials: true });
   
-      console.log('Update user response:', response.data);
+     // console.log('Update user response:', response.data);
   
       return response.data;
     } catch (error) {
