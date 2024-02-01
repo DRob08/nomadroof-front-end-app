@@ -43,7 +43,8 @@ const PageAddListing1: FC<PageAddListing1Props> = () => {
     city_fee,
     cleaning_fee,
     min_months_booking,
-    extra_price_per_guest
+    extra_price_per_guest,
+    rentingType // Add this property to your propertyState
   } = propertyState;
 
 
@@ -119,15 +120,19 @@ const PageAddListing1: FC<PageAddListing1Props> = () => {
             />
           </FormItem>
           <FormItem
-            label="What are you renting?"
-            desc="Entire place: Guests have the whole place to themselves—there's a private entrance and no shared spaces. A bedroom, bathroom, and kitchen are usually included."
+          label="What are you renting?"
+          desc="Entire place: Guests have the whole place to themselves—there's a private entrance and no shared spaces. A bedroom, bathroom, and kitchen are usually included."
+        >
+          <Select
+            name="rentingType"  // Make sure the name matches the propertyState field
+            value={rentingType}
+            onChange={handleInputChange}
           >
-            <Select>
-              <option value="Hotel">Entire place</option>
-              <option value="Private room">Private room</option>
-              <option value="Share room">Share room</option>
-            </Select>
-          </FormItem>
+            <option value="Hotel">Entire place</option>
+            <option value="Private room">Private room</option>
+            <option value="Share room">Share room</option>
+          </Select>
+        </FormItem>
         </div>
       </>
     </CommonLayout>

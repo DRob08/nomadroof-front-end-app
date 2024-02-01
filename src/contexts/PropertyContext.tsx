@@ -30,6 +30,8 @@ interface PropertyState {
   zip_code: string;
   country: string;
   city: string;
+  state: string;
+  rentingType: string;
 }
 
 interface PropertyAction {
@@ -72,9 +74,11 @@ const initialState: PropertyState = {
   extra_price_per_guest: 0.0,
   verified: false,
   property_address: '',
+  state: '',
   zip_code: '',
   country: '',
   city: '',
+  rentingType:'',
 };
 
 const actionTypes = {
