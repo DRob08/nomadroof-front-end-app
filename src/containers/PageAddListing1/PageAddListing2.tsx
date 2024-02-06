@@ -10,6 +10,9 @@ import CommonLayout from "./CommonLayout";
 import FormItem from "./FormItem";
 import { loadGoogleMapsScript, getLatLngFromAddress } from "../../utils/googleMaps";
 import { usePropertyContextProvider } from '../../contexts/PropertyContext';
+import { fetchCountries, createProperty, updateProperty } from '../../api/axios';
+import { FetchCountriesResponse } from '../../types/apiTypes';
+import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
 export interface PageAddListing2Props { }
 
@@ -28,6 +31,8 @@ const PageAddListing2: FC<PageAddListing2Props> = () => {
     // });
 
     const { propertyState, setPropertyField, resetProperty } = usePropertyContextProvider();
+    const [countries, setCountries] = useState<any[]>([]); // State to hold countries
+
 
     const [currentLocation, setCurrentLocation] = useState({
         lat: propertyState.latitude || 25.790654, // Default to 25.790654 if latitude is not set
@@ -57,6 +62,22 @@ const PageAddListing2: FC<PageAddListing2Props> = () => {
             full_address: propertyState.property_address || "",
         });
     }, [propertyState]);
+
+    useEffect(() => {
+      const loadCountries = async () => {
+        try {
+          const countriesData: FetchCountriesResponse = await fetchCountries();
+          const sortedCountries = countriesData.sort((a, b) =>
+            a.name.common.localeCompare(b.name.common)
+          );
+          setCountries(sortedCountries);
+        } catch (error) {
+          console.error('Error loading countries:', error);
+        }
+      };
+    
+      loadCountries();
+    }, []);
 
     const getCurrentLocation = () => {
         // ... (same as before)
@@ -127,6 +148,18 @@ const PageAddListing2: FC<PageAddListing2Props> = () => {
         setPropertyField('property_address', address); 
     };
 
+    const handleSelect = async (address: string) => {
+      const results = await geocodeByAddress(address);
+      const latLng = await getLatLng(results[0]);
+    
+      setCurrentLocation((prevLocation) => ({
+        ...prevLocation,
+        lat: latLng.lat,
+        lng: latLng.lng,
+        address,
+      }));
+    };
+
     const handleCityChange = (city: string) => {
         setCurrentLocation((prevLocation) => ({ ...prevLocation, city }));
         setPropertyField('city', city); // Update the 'city' field in property context
@@ -143,6 +176,12 @@ const PageAddListing2: FC<PageAddListing2Props> = () => {
         setPropertyField('zip_code', postalCode);
         
     };
+
+    const handleCountryChange = (country: string) => {
+      setCurrentLocation((prevLocation) => ({ ...prevLocation, country }));
+      setPropertyField('country', country);
+      
+  };
 
     const buildAddress = () => {
         const {
@@ -189,24 +228,43 @@ const PageAddListing2: FC<PageAddListing2Props> = () => {
                     </ButtonSecondary>
                     {/* ITEM */}
                     <FormItem label="Country/Region">
-                        <Select value={currentLocation.country} onChange={(e) => setCurrentLocation((prevLocation) => ({ ...prevLocation, country: e.target.value }))}>
-                            <option value="Viet Nam">Viet Nam</option>
-                            <option value="Thailand">Thailand</option>
-                            <option value="France">France</option>
-                            <option value="Singapore">Singapore</option>
-                            <option value="Jappan">Jappan</option>
-                            <option value="Korea">Korea</option>
-                            <option value="...">...</option>
-                        </Select>
+                      <Select
+                        value={currentLocation.country}
+                        onChange={(e) => handleCountryChange(e.target.value)}
+                      >
+                        {countries.map((country) => (
+                          <option key={country.name.common} value={country.name.common}>
+                            {country.name.common}
+                          </option>
+                        ))}
+                      </Select>
                     </FormItem>
+
                     <FormItem label="Address">
-                        <Input
-                            id="autocomplete-input-street"
-                            placeholder="Enter Address"
-                            value={currentLocation.address}
-                            onChange={(e) => handleAddressChange(e.target.value)}
-                            onBlur={handleFieldBlur}
-                        />
+                      <PlacesAutocomplete
+                        value={currentLocation.address}
+                        onChange={(address) => handleAddressChange(address)}
+                        onSelect={(address) => handleSelect(address)}
+                      >
+                        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+                          <div>
+                            <Input
+                              {...getInputProps({
+                                placeholder: 'Enter Address',
+                                id: 'autocomplete-input',
+                              })}
+                            />
+                            <div>
+                              {loading && <div>Loading...</div>}
+                              {suggestions.map((suggestion) => (
+                                <div {...getSuggestionItemProps(suggestion)} key={suggestion.description}>
+                                  {suggestion.description}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </PlacesAutocomplete>
                     </FormItem>
 
                     <FormItem label="Room number (optional)">
