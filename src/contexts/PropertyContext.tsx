@@ -8,7 +8,7 @@ interface PropertyState {
   latitude: null | number;
   longitude: null | number;
   features_and_amenities: string;
-  max_guests: null | number;
+  max_guests: number;
   availability: boolean;
   monthly_price: null | number;
   weekly_price: null | number;
@@ -32,6 +32,12 @@ interface PropertyState {
   city: string;
   state: string;
   rentingType: string;
+  roomNumber: string;
+  kitchen:number;
+  allow_smoking: boolean;
+  allow_pet: boolean;
+  allow_party_organizing: boolean;
+  allow_cooking: boolean;
 }
 
 interface PropertyAction {
@@ -43,6 +49,7 @@ interface PropertyContextProps {
   propertyState: PropertyState;
   setPropertyField: (field: string, value: any) => void;
   setPropertyId: (property_id: string) => void;
+  setBooleanProperty: (field: string, value: boolean) => void;
   resetProperty: () => void;
 }
 
@@ -55,7 +62,7 @@ const initialState: PropertyState = {
   latitude: null,
   longitude: null,
   features_and_amenities: '',
-  max_guests: null,
+  max_guests: 0,
   availability: false,
   monthly_price: null,
   weekly_price: null,
@@ -79,12 +86,19 @@ const initialState: PropertyState = {
   country: '',
   city: '',
   rentingType:'',
+  roomNumber:'',
+  kitchen: 0,
+  allow_smoking: false,
+  allow_pet: false,
+  allow_party_organizing: false,
+  allow_cooking: false,
 };
 
 const actionTypes = {
   SET_PROPERTY_FIELD: 'SET_PROPERTY_FIELD',
   SET_PROPERTY_ID: 'SET_PROPERTY_ID',
   RESET_PROPERTY: 'RESET_PROPERTY',
+  SET_BOOLEAN_PROPERTY: 'SET_BOOLEAN_PROPERTY', // Add this line
 };
 
 const propertyReducer = (state: PropertyState, action: PropertyAction): PropertyState => {
@@ -101,6 +115,12 @@ const propertyReducer = (state: PropertyState, action: PropertyAction): Property
       };
     case actionTypes.RESET_PROPERTY:
       return initialState;
+    // New case to handle setting boolean properties
+    case actionTypes.SET_BOOLEAN_PROPERTY:
+      return {
+        ...state,
+        [action.payload.field]: action.payload.value,
+      };
     default:
       return state;
   }
@@ -131,12 +151,21 @@ export const PropertyProvider: FC<PropertyProviderProps> = ({ children }) => {
     });
   };
 
+  const setBooleanProperty = (field: string, value: boolean) => {
+    dispatch({
+      type: actionTypes.SET_BOOLEAN_PROPERTY,
+      payload: { field, value },
+    });
+  };
+
+
+
   const resetProperty = () => {
     dispatch({ type: actionTypes.RESET_PROPERTY });
   };
 
   return (
-    <PropertyContextProvider.Provider value={{ propertyState, setPropertyField, setPropertyId, resetProperty }}>
+    <PropertyContextProvider.Provider value={{ propertyState, setPropertyField, setPropertyId, resetProperty,setBooleanProperty }}>
       {children}
     </PropertyContextProvider.Provider>
   );
