@@ -38,6 +38,7 @@ interface PropertyState {
   allow_pet: boolean;
   allow_party_organizing: boolean;
   allow_cooking: boolean;
+  [key: string]: any; // Index signature allowing dynamic access by string keys
 }
 
 interface PropertyAction {
@@ -92,6 +93,7 @@ const initialState: PropertyState = {
   allow_pet: false,
   allow_party_organizing: false,
   allow_cooking: false,
+  
 };
 
 const actionTypes = {

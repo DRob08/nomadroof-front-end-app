@@ -2,24 +2,32 @@ import React, { FC } from "react";
 import ButtonPrimary from "shared/Button/ButtonPrimary";
 import Input from "shared/Input/Input";
 import CommonLayout from "./CommonLayout";
+import { usePropertyContextProvider } from "../../contexts/PropertyContext";
 
 export interface PageAddListing5Props {}
 
 const PageAddListing5: FC<PageAddListing5Props> = () => {
+  const { propertyState, setBooleanProperty } = usePropertyContextProvider();
+
   const renderRadio = (
     name: string,
     id: string,
     label: string,
-    defaultChecked?: boolean
+    checked: boolean
   ) => {
+    const handleChange = () => {
+      setBooleanProperty(name, !propertyState[name]);
+    };
+
     return (
       <div className="flex items-center">
         <input
-          defaultChecked={defaultChecked}
+          checked={checked}
           id={id + name}
           name={name}
           type="radio"
           className="focus:ring-primary-500 h-6 w-6 text-primary-500 border-neutral-300 !checked:bg-primary-500 bg-transparent"
+          onChange={handleChange}
         />
         <label
           htmlFor={id + name}
@@ -66,9 +74,9 @@ const PageAddListing5: FC<PageAddListing5Props> = () => {
               General amenities
             </label>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {renderRadio("Smoking", "Do", "Do not allow")}
-              {renderRadio("Smoking", "Allow", "Allow", true)}
-              {renderRadio("Smoking", "Charge", "Charge")}
+              {renderRadio("allow_smoking", "Do", "Do not allow", !propertyState.allow_smoking)}
+              {renderRadio("allow_smoking", "Allow", "Allow", propertyState.allow_smoking)}
+              {/* {renderRadio("allow_smoking", "Charge", "Charge", false)} */}
             </div>
           </div>
 
@@ -78,9 +86,9 @@ const PageAddListing5: FC<PageAddListing5Props> = () => {
               Pet
             </label>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {renderRadio("Pet", "Do", "Do not allow")}
-              {renderRadio("Pet", "Allow", "Allow", true)}
-              {renderRadio("Pet", "Charge", "Charge")}
+              {renderRadio("allow_pet", "Do", "Do not allow", !propertyState.allow_pet)}
+              {renderRadio("allow_pet", "Allow", "Allow", propertyState.allow_pet)}
+              {/* {renderRadio("allow_pet", "Charge", "Charge", false)} */}
             </div>
           </div>
 
@@ -90,9 +98,9 @@ const PageAddListing5: FC<PageAddListing5Props> = () => {
               Party organizing
             </label>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {renderRadio("Partyorganizing", "Do", "Do not allow")}
-              {renderRadio("Partyorganizing", "Allow", "Allow", true)}
-              {renderRadio("Partyorganizing", "Charge", "Charge")}
+              {renderRadio("allow_party_organizing", "Do", "Do not allow", !propertyState.allow_party_organizing)}
+              {renderRadio("allow_party_organizing", "Allow", "Allow", propertyState.allow_party_organizing)}
+              {/* {renderRadio("allow_party_organizing", "Charge", "Charge", false)} */}
             </div>
           </div>
 
@@ -102,9 +110,9 @@ const PageAddListing5: FC<PageAddListing5Props> = () => {
               Cooking
             </label>
             <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {renderRadio("Cooking", "Do", "Do not allow")}
-              {renderRadio("Cooking", "Allow", "Allow", true)}
-              {renderRadio("Cooking", "Charge", "Charge")}
+              {renderRadio("allow_cooking", "Do", "Do not allow", !propertyState.allow_cooking)}
+              {renderRadio("allow_cooking", "Allow", "Allow", propertyState.allow_cooking)}
+              {/* {renderRadio("allow_cooking", "Charge", "Charge", false)} */}
             </div>
           </div>
 
